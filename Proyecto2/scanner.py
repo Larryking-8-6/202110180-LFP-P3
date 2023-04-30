@@ -10,6 +10,7 @@ def is_delimiter(c):
 def is_quote(c):
     return c in "\"'"
 
+
 TRANSITION_TABLE = {
     'S0': {
         'is_alpha': 'S1',

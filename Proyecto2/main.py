@@ -1,9 +1,9 @@
 import sys
+import scanner
 from scanner import Scanner
 from Parser import Parser
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QDockWidget, QMenu, QMenuBar, QAction, QFileDialog, QVBoxLayout, QWidget, QPlainTextEdit, QLabel, QTableWidget, QTableWidgetItem
 from PyQt5.QtGui import QFont
-
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -13,23 +13,67 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('Compilador NoSQL')
         self.setGeometry(100, 100, 1200, 800)
 
-        # Agregar widgets y configuraciones adicionales para la interfaz de usuario
+        # Estilo de la interfaz de usuario
+        self.setStyleSheet("""
+            QMainWindow {
+                background-color: #ffb347;
+            }
+            QPlainTextEdit, QTextEdit, QTableWidget {
+                background-color: #ffffff;
+                color: #000000;
+                selection-background-color: #ff6961;
+                selection-color: #ffffff;
+                border: 1px solid #333333;
+            }
+            QDockWidget::title {
+                background-color: #6ba8a9;
+                color: #ffffff;
+                padding-left: 4px;
+            }
+            QDockWidget {
+                font: 10pt "Courier";
+            }
+            QMenu::item {
+                color: #000000;
+            }
+            QMenu::item:selected {
+                color: #ffffff;
+                background-color: #ff6961;
+            }
+            QMenuBar {
+                background-color: #6ba8a9;
+                color: #ffffff;
+            }
+            QMenuBar::item {
+                color: #000000;
+            }
+            QMenuBar::item:selected {
+                color: #ffffff;
+                background-color: #ff6961;
+            }
+            QTableWidget::item {
+                color: #000000;
+            }
+            QTableWidget::item:selected {
+                color: #ffffff;
+                background-color: #ff6961;
+            }
+        """)
+
         self.init_ui()
 
     def init_ui(self):
-        # Editor de código
+
         self.code_editor = QPlainTextEdit(self)
         self.code_editor.setFont(QFont("Courier", 12))
         self.setCentralWidget(self.code_editor)
 
-        # Area de visualización de sentencias
         self.sentences_viewer = QTextEdit(self)
         self.sentences_viewer.setReadOnly(True)
         self.sentences_dock = QDockWidget("Sentencias Generadas", self)
         self.sentences_dock.setWidget(self.sentences_viewer)
         self.addDockWidget(2, self.sentences_dock)
 
-        # Agregar tabla de tokens
         self.tokens_table = QTableWidget(self)
         self.tokens_table.setColumnCount(4)
         self.tokens_table.setHorizontalHeaderLabels(['No.', 'Tipo', 'Linea', 'Lexema'])
@@ -37,7 +81,6 @@ class MainWindow(QMainWindow):
         self.tokens_dock.setWidget(self.tokens_table)
         self.addDockWidget(2, self.tokens_dock)
 
-        # Area de errores
         self.errors_table = QTableWidget(self)
         self.errors_table.setColumnCount(5)
         self.errors_table.setHorizontalHeaderLabels(['Tipo', 'Linea', 'Columna', 'Token', 'Descripcion'])
@@ -45,12 +88,10 @@ class MainWindow(QMainWindow):
         self.errors_dock.setWidget(self.errors_table)
         self.addDockWidget(2, self.errors_dock)
 
-        # Menu Archivo
         self.menu_archivo = QMenu("Archivo", self)
         self.menu_analisis = QMenu("Análisis", self)
         self.menu_ver = QMenu("Ver", self)
 
-        # Menu Archivo acciones
         self.action_nuevo = QAction("Nuevo", self)
         self.action_abrir = QAction("Abrir", self)
         self.action_guardar = QAction("Guardar", self)
@@ -64,22 +105,18 @@ class MainWindow(QMainWindow):
         self.menu_archivo.addSeparator()
         self.menu_archivo.addAction(self.action_salir)
 
-        # Menú Análisis acciones
         self.action_analizar = QAction("Generar sentencias MongoDB", self)
         self.menu_analisis.addAction(self.action_analizar)
 
-        # Menu Ver acciones
         self.action_ver_tokens = QAction("Tokens", self)
         self.menu_ver.addAction(self.action_ver_tokens)
 
-        # Aniadir menus a la barra de menú
         self.menu_bar = QMenuBar(self)
         self.menu_bar.addMenu(self.menu_archivo)
         self.menu_bar.addMenu(self.menu_analisis)
         self.menu_bar.addMenu(self.menu_ver)
         self.setMenuBar(self.menu_bar)
 
-        # Conectar acciones a funciones
         self.action_abrir.triggered.connect(self.open_file)
         self.action_guardar.triggered.connect(self.save_file)
         self.action_guardar_como.triggered.connect(self.save_file_as)
@@ -123,8 +160,8 @@ class MainWindow(QMainWindow):
 
     def analyze_code(self):
         input_str = self.code_editor.toPlainText()
-        scanner = Scanner(input_str)  # Crear una instancia de Scanner
-        tokens = scanner.tokenize()  # Obtener los tokens
+        scanner_instance = scanner.Scanner(input_str)
+        tokens = scanner_instance.tokenize()  # Obtener los tokens
         parser = Parser(tokens)  # Crear una instancia del analizador con los tokens
 
         try:
