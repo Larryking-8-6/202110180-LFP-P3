@@ -513,16 +513,16 @@ SINTACTICO:
 
     buscarUnico : BuscarUnico ID = nueva BuscarUnico ( STRING )
 ## Parser,py
-El archivo Parser.py contiene la clase Parser, que tiene varios métodos para analizar y procesar los tokens generados por el Scanner. Estos métodos se llaman en función de las reglas gramaticales del lenguaje y la estructura del código fuente. Algunos de los métodos clave en la clase Parser incluyen:
+El archivo Parser.py alberga la clase Parser, que cuenta con diversos métodos para examinar y tratar los tokens creados por el Scanner. Dichos métodos se ejecutan según las normas gramaticales del lenguaje y la organización del código fuente. Algunos métodos importantes en la clase Parser son:
 
-_init_(self, tokens): Este es el constructor de la clase Parser. Recibe la lista de tokens generada por el Scanner y realiza la inicialización de las variables de instancia, como el índice del token actual y el token actual.
+init(self, tokens): Es el constructor de la clase Parser. Acepta la lista de tokens creada por el Scanner e inicializa las variables de instancia, como el índice del token actual y el token en sí.
 
-parse(self): Este es el método principal que se llama para iniciar el proceso de análisis. Este método inicia el proceso de construcción del AST llamando a otros métodos de la clase Parser.
+parse(self): Es el método principal que se invoca para comenzar el análisis. Inicia la creación del AST llamando a otros métodos de la clase Parser.
 
-Métodos para analizar producciones gramaticales: Estos métodos tienen nombres como parse_statement, parse_expression, etc. Estos métodos se encargan de analizar las diferentes producciones gramaticales (reglas) del lenguaje. Cada método analiza una parte específica de la gramática y construye nodos del AST correspondientes a esa parte.
+Métodos para analizar reglas gramaticales: Estos métodos tienen nombres como parse_statement, parse_expression, etc., y se encargan de examinar las distintas reglas gramaticales del lenguaje. Cada método evalúa una sección específica de la gramática y crea nodos del AST correspondientes a esa sección.
 
-Métodos para consumir tokens: Estos métodos tienen nombres como consume, match, etc. Estos métodos se utilizan para consumir tokens de la lista de tokens y verificar que los tokens cumplan con las expectativas del Parser en función de las reglas gramaticales. Si se encuentra un token inesperado, estos métodos generarán un error.
+Métodos para procesar tokens: Estos métodos tienen nombres como consume, match, etc., y se emplean para procesar tokens de la lista y comprobar que cumplen con las expectativas del Parser según las normas gramaticales. Si se encuentra un token inesperado, estos métodos generarán un error.
 
-El proceso de análisis comienza con el método parse, que a su vez llama a otros métodos de la clase Parser en función de las reglas gramaticales del lenguaje y la estructura del código fuente. A medida que se analizan los tokens, se van construyendo los nodos del AST, y al final del proceso de análisis, se obtiene un AST completo que representa la estructura y el significado del código fuente.
+El análisis se inicia con el método parse, que a su vez invoca otros métodos de la clase Parser en función de las normas gramaticales del lenguaje y la organización del código fuente. A medida que se examinan los tokens, se van creando nodos del AST. Al finalizar el análisis, se obtiene un AST completo que representa la estructura y el significado del código fuente.
 
-En resumen, el Parser.py contiene una clase Parser que implementa un analizador sintáctico para el lenguaje en cuestión. El Parser utiliza una combinación de métodos para analizar las reglas gramaticales del lenguaje y construir un AST a partir de la lista de tokens generada por el Scanner.
+En resumen, Parser.py contiene una clase Parser que implementa un analizador sintáctico para el lenguaje en cuestión. El Parser emplea una serie de métodos para evaluar las normas gramaticales del lenguaje y construir un AST a partir de la lista de tokens generada por el Scanner.
