@@ -1,5 +1,24 @@
 from scanner import Scanner
 
+class Nodo:
+    def __init__(self, tipo, hijos=None, valor=None):
+        self.tipo = tipo
+        if hijos is None:
+            self.hijos = []
+        else:
+            self.hijos = hijos
+        self.valor = valor
+
+    def __repr__(self, nivel=0):
+        indent = '  ' * nivel
+        representacion = indent + self.tipo
+        if self.valor is not None:
+            representacion += f"({self.valor})"
+        representacion += "\n"
+        for hijo in self.hijos:
+            representacion += hijo.__repr__(nivel + 1)
+        return representacion
+
 class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
@@ -18,13 +37,35 @@ class Parser:
             raise RuntimeError(f'Se esperaba {expected!r}, pero se encontró {self.token!r}')
 
     def parse(self):
-        while self.peek() is not None:
-            if self.peek()[0] == "---":  # Agregamos el manejo de comentarios
-                self.consume("---")
-                self.statements.append("---")
+        arbol = Nodo("root")
+        while self.pos < len(self.tokens):
+            if self.tokens[self.pos].tipo in self.funciones:
+                arbol.hijos.append(self.crear_funcion())
             else:
-                self.statements.append(self.parse_stmt())
-        return self.statements
+                self.error_sync()
+                self.pos += 1
+        return arbol
+
+    def next(self):
+        self.token = self.tokens.pop(0)
+
+    def match(self, expected):
+        if self.token[0] == expected:
+            t = self.token
+            self.next()
+            return t
+        else:
+            raise RuntimeError(f'Se esperaba {expected!r}, pero se encontró {self.token!r}')
+
+    def parse(self):
+        arbol = Nodo("root")
+        while self.pos < len(self.tokens):
+            if self.tokens[self.pos].tipo in self.funciones:
+                arbol.hijos.append(self.crear_funcion())
+            else:
+                self.error_sync()
+                self.pos += 1
+        return arbol
 
     def consume(self, expected_type=None):
         if expected_type is not None:
@@ -298,4 +339,6 @@ if __name__ == '__main__':
     scanner = Scanner(input_str)
     tokens = scanner.tokenize()
     parser = Parser(tokens)
-    parser.parse()
+    parser = Parser(tokens)
+    arbol = parser.parse()
+    print(arbol)
