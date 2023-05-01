@@ -10,7 +10,7 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         # Ventana principal
-        self.setWindowTitle('Compilador NoSQL')
+        self.setWindowTitle('Compilador NoSQL - 202110180 - LFP')
         self.setGeometry(100, 100, 1200, 800)
 
         # Estilo de la interfaz de usuario

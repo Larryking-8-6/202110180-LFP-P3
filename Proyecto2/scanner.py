@@ -7,6 +7,9 @@ def is_alnum_or_underscore(c):
 def is_delimiter(c):
     return c in r'{}()=,.;"\'\':}-$“”-* /'
 
+def is_digit(c):
+    return c.isdigit()
+
 def is_quote(c):
     return c in "\"'"
 
@@ -109,6 +112,9 @@ class Scanner:
                 elif is_quote(c):
                     start = i
                     state = TRANSITION_TABLE[state]['is_quote']
+                elif is_digit(c):
+                    state = TRANSITION_TABLE[state]['is_digit']
+                    start = i
                 else:
                     raise RuntimeError(f'{c!r} inesperado en la línea {line_num}')
 
@@ -143,12 +149,19 @@ class Scanner:
                     state = TRANSITION_TABLE[state]['is_quote']
                 i += 1
 
-            if state == 'S3_end':
+            elif state == 'S3_end':
                 token = self.input_str[start + 1:i - 1]
                 self.tokens.append(('STRING', token, line_num, start, i))
                 state = 'S0'
                 i += 1
-            else:
-                i += 1
+
+            elif state == 'S4':
+                if not is_digit(c) and c != '.':
+                    token = self.input_str[start:i]
+                    self.tokens.append(('NUMBER', token, line_num, start, i))
+                    state = 'S0'
+                    continue
+
+            i += 1
 
         return self.tokens + [None]
